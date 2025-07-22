@@ -1,0 +1,22 @@
+1.- crear carpeta para el entorno virtual
+python -m venv .venv
+
+2.- Activar el entorno virtual
+.\.venv\Scripts\activate
+
+3.- Intalar librerias necesarias
+pip install 
+    fastapi
+    sqlalchemy
+    strawberry-graphql
+    pytest
+    uvicorn[standard]
+    httpx
+
+o pip install -r .\requeriments.txt
+
+4.- Definir los modelos de datos
+
+5.- Definir los Esquemas de GraphQL
+
+6.- Crear una api con fastAPI
