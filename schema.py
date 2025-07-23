@@ -12,12 +12,36 @@ class SucursalType:
     nombre: str
     ubicacion: str
 
+    @strawberry.field
+    def empleados(self) -> List["EmpleadoType"]:
+        db = get_db()
+        empleados = db.query(Empleado).filter(Empleado.sucursal_id == self.id).all()
+        return [
+            EmpleadoType(
+                id=empleado.id,
+                nombre=empleado.nombre,
+                edad=empleado.edad,
+                sucursal_id=empleado.sucursal_id
+            )
+            for empleado in empleados
+        ]
+
 @strawberry.type
 class EmpleadoType:
     id: int
     nombre: str
     edad: int
     sucursal_id: int
+
+    @strawberry.field
+    def sucursal(self) -> "SucursalType":
+        db = get_db()
+        sucursal = db.query(Sucursal).filter(Sucursal.id == self.sucursal_id).first()
+        return SucursalType(
+            id=sucursal.id,
+            nombre=sucursal.nombre,
+            ubicacion=sucursal.ubicacion
+        ) if sucursal else None
 
 @strawberry.type
 class Query:
@@ -65,7 +89,6 @@ class Subscription:
                 yield empleado
         except Exception as e:
             print(f"Error en la suscripción empleado_creado: {e}")
-            # Opcional: puedes usar logging en vez de print
             return
 
 async def empleado_stream(sucursal_id: int) -> AsyncGenerator[EmpleadoType, None]:
@@ -78,7 +101,6 @@ async def empleado_stream(sucursal_id: int) -> AsyncGenerator[EmpleadoType, None
                 yield EmpleadoType(id=empleado.id, nombre=empleado.nombre, edad=empleado.edad, sucursal_id=empleado.sucursal_id)
         except Exception as e:
             print(f"Error en empleado_stream: {e}")
-            # Opcional: puedes usar logging en vez de print
             break
 
 

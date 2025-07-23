@@ -20,3 +20,5 @@ o pip install -r .\requeriments.txt
 5.- Definir los Esquemas de GraphQL
 
 6.- Crear una api con fastAPI
+
+7.- Levantar el server con uvicorn main:app --reload
